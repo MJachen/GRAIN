@@ -70,16 +70,17 @@ class WeightedMultiHeadGraphAttention(nn.Module):
 class TwoLayerTwoHeadGAT(nn.Module):
     """Paper-specified two GAT layers and two attention heads."""
 
-    def __init__(self, feature_dimension: int, dropout: float) -> None:
+    def __init__(
+        self, feature_dimension: int, hidden_dimension: int, dropout: float
+    ) -> None:
         super().__init__()
         self.layer1 = WeightedMultiHeadGraphAttention(
-            feature_dimension, feature_dimension, heads=2, dropout=dropout
+            feature_dimension, hidden_dimension, heads=2, dropout=dropout
         )
         self.layer2 = WeightedMultiHeadGraphAttention(
-            feature_dimension, feature_dimension, heads=2, dropout=dropout
+            hidden_dimension, feature_dimension, heads=2, dropout=dropout
         )
 
     def forward(self, node_features: Tensor, adjacency: Tensor) -> Tensor:
         hidden = F.elu(self.layer1(node_features, adjacency))
         return self.layer2(hidden, adjacency)
-

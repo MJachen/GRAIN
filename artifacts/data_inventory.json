@@ -146,7 +146,12 @@
         "plain_only": 0,
         "ce_only": 0,
         "both": 344,
-        "neither": 0
+        "neither": 0,
+        "status": "COARSE_RULE_INVALID_FOR_EXPLICIT_MASK",
+        "partial_plain_rows": 0,
+        "partial_ce_rows": 14,
+        "partial_ce_zero_based_rows": [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+        "note": "Each partial CE row has 8 finite values and 52 NaNs; strict official loading is blocked."
       },
       "patient_identity": {
         "status": "blocked",

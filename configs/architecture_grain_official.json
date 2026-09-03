@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "architecture": "GRAIN",
+  "frozen_protocol_commit": "ffe372c5b43a32a0b9e86c137c19252e580e1466",
+  "shared": {
+    "gat_layers": {"value": 2, "confidence": "VERIFIED", "source": "paper Section III-D"},
+    "gat_heads": {"value": 2, "confidence": "VERIFIED", "source": "paper Section III-D"},
+    "transformer_heads": {"value": 4, "confidence": "VERIFIED", "source": "attention1.py default used by final NET plus loaded legacy objects"},
+    "transformer_ffn_dimension": {"value": 2048, "confidence": "VERIFIED", "source": "legacy state_dict linear1/linear2 shapes"},
+    "attention_tokens": {"value": 1, "confidence": "ASSUMED", "source": "paper-consistent minimal choice; paper does not define tokenization"},
+    "gat_dropout": {"value": 0.2, "confidence": "VERIFIED", "source": "FAMI.py and loaded checkpoint objects"},
+    "transformer_dropout": {"value": 0.1, "confidence": "VERIFIED", "source": "attention1.py and loaded checkpoint objects"},
+    "relation_activation": {"value": "relu", "confidence": "ASSUMED", "source": "paper requires nonlinear sigma but does not name it"},
+    "relation_alpha": {"value": 3.0, "confidence": "VERIFIED", "source": "FAMI.py default and loaded checkpoint objects"},
+    "relation_gamma": {"value": 1.0, "confidence": "ASSUMED", "source": "unit coefficient is the minimal Eq. 9 implementation; no stored value"},
+    "uncertainty_temperature": {"value": 0.1, "confidence": "VERIFIED", "source": "paper Experimental Setup"},
+    "contrastive_temperature": {"value": 0.5, "confidence": "VERIFIED", "source": "paper Experimental Setup"}
+  },
+  "profiles": {
+    "center_a": {"input_dim_plain": 120, "input_dim_ce": 120, "projection_dim": 120, "patient_dim": 120, "relation_dim": 120, "gat_hidden_dim": 120, "transformer_dim": 120, "fusion_dim": 120, "classifier_hidden_dim": 120},
+    "center_b": {"input_dim_plain": 60, "input_dim_ce": 60, "projection_dim": 60, "patient_dim": 60, "relation_dim": 60, "gat_hidden_dim": 60, "transformer_dim": 60, "fusion_dim": 60, "classifier_hidden_dim": 60},
+    "mixed_ab": {"input_dim_plain": 60, "input_dim_ce": 60, "projection_dim": 60, "patient_dim": 60, "relation_dim": 60, "gat_hidden_dim": 60, "transformer_dim": 60, "fusion_dim": 60, "classifier_hidden_dim": 60},
+    "center_c": {"input_dim_plain": 120, "input_dim_ce": 120, "projection_dim": 120, "patient_dim": 120, "relation_dim": 120, "gat_hidden_dim": 120, "transformer_dim": 120, "fusion_dim": 120, "classifier_hidden_dim": 120}
+  },
+  "profile_dimension_provenance": {
+    "input_dimensions": {"confidence": "VERIFIED", "source": "fingerprinted legacy CSV schema and modality layout"},
+    "projection_dimension": {"confidence": "LIKELY", "source": "final legacy model construction and projection checkpoint shapes"},
+    "patient_dimension": {"confidence": "ASSUMED", "source": "paper-consistent identity width; paper and checkpoint do not uniquely expose Q width"},
+    "relation_dimension": {"confidence": "LIKELY", "source": "FAMI.py construction and saved relation-layer shapes"},
+    "gat_hidden_dimension": {"confidence": "VERIFIED", "source": "saved GAT state_dict shapes"},
+    "transformer_dimension": {"confidence": "VERIFIED", "source": "saved multi-head attention state_dict shapes"},
+    "fusion_dimension": {"confidence": "LIKELY", "source": "saved fusion-layer shapes"},
+    "classifier_hidden_dimension": {"confidence": "VERIFIED", "source": "saved fc1/fc2 state_dict shapes"}
+  },
+  "remaining_assumed_parameters": ["attention_tokens", "patient_dim", "relation_activation", "relation_gamma"]
+}

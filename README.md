@@ -21,6 +21,10 @@ experimental practice.
   probability metric infrastructure: implemented.
 - Phase 4B — one real-data fold is available only through the explicitly
   labelled development smoke entry point.
+- Phase 4C — formal architecture/training parameters and per-dataset readiness:
+  frozen. Center A and Center B are eligible for internal full CV. Mixed A+B
+  is blocked by 14 partial-modality rows; Mixed-to-C external inference is also
+  blocked by feature-space mismatch.
 - Phase 5 onward — full reproduction, baselines and ablations: not started.
 - No paper result is claimed reproduced by this bootstrap.
 
@@ -56,10 +60,10 @@ Observed feature vectors must be finite and match the configured modality
 dimension. A false availability flag is authoritative even if a path is
 accidentally present.
 
-Paper-undefined relation/fusion dimensions, attention tokenization, relation
-activation/scales and dropout remain `null` until the approved feature artifact
-and implementation provenance are reconciled. Legacy defaults are deliberately
-not promoted to official configuration values.
+Formal architecture values are declared in
+`configs/architecture_grain_official.json`. Four paper-underspecified choices
+remain visibly marked `ASSUMED`; no value was selected from outer-test
+performance. See `docs/architecture_provenance.md`.
 
 ## Bound environment and development usage
 
@@ -124,6 +128,8 @@ and metrics. Raw clinical data, feature arrays, generated splits, checkpoints
 and run outputs are ignored by Git.
 
 See [docs/paper_code_mapping.md](docs/paper_code_mapping.md) for equation-level
-implementation status and [docs/legacy_migration.md](docs/legacy_migration.md)
+implementation status, [docs/architecture_provenance.md](docs/architecture_provenance.md)
+for the frozen parameter evidence, [docs/feature_alignment.md](docs/feature_alignment.md)
+for the cross-center decision, and [docs/legacy_migration.md](docs/legacy_migration.md)
 for the legacy migration boundary. Phase 2.5 evidence is documented in
 [docs/data_environment_binding.md](docs/data_environment_binding.md).

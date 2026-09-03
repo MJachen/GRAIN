@@ -51,7 +51,9 @@ class FeatureTokenizer(nn.Module):
 class TransformerBlock(nn.Module):
     """Eq. (21)–(23), operating only over tokens within each patient."""
 
-    def __init__(self, hidden_dimension: int, heads: int, dropout: float) -> None:
+    def __init__(
+        self, hidden_dimension: int, heads: int, dropout: float, ffn_dimension: int
+    ) -> None:
         super().__init__()
         self.attention = nn.MultiheadAttention(
             hidden_dimension, heads, dropout=dropout, batch_first=True
@@ -60,9 +62,9 @@ class TransformerBlock(nn.Module):
         self.norm2 = nn.LayerNorm(hidden_dimension)
         self.dropout = nn.Dropout(dropout)
         self.feed_forward = nn.Sequential(
-            nn.Linear(hidden_dimension, hidden_dimension * 4),
+            nn.Linear(hidden_dimension, ffn_dimension),
             nn.ReLU(),
-            nn.Linear(hidden_dimension * 4, hidden_dimension),
+            nn.Linear(ffn_dimension, hidden_dimension),
         )
 
     def forward(self, tokens: Tensor) -> Tensor:
@@ -74,7 +76,9 @@ class TransformerBlock(nn.Module):
 class CrossAttentionBlock(nn.Module):
     """One direction of Eq. (29)–(33), isolated within each patient."""
 
-    def __init__(self, hidden_dimension: int, heads: int, dropout: float) -> None:
+    def __init__(
+        self, hidden_dimension: int, heads: int, dropout: float, ffn_dimension: int
+    ) -> None:
         super().__init__()
         self.attention = nn.MultiheadAttention(
             hidden_dimension, heads, dropout=dropout, batch_first=True
@@ -83,9 +87,9 @@ class CrossAttentionBlock(nn.Module):
         self.norm2 = nn.LayerNorm(hidden_dimension)
         self.dropout = nn.Dropout(dropout)
         self.feed_forward = nn.Sequential(
-            nn.Linear(hidden_dimension, hidden_dimension * 4),
+            nn.Linear(hidden_dimension, ffn_dimension),
             nn.ReLU(),
-            nn.Linear(hidden_dimension * 4, hidden_dimension),
+            nn.Linear(ffn_dimension, hidden_dimension),
         )
 
     def forward(self, query_tokens: Tensor, source_tokens: Tensor) -> Tensor:
@@ -106,34 +110,40 @@ class AdaptiveIntraInterFusion(nn.Module):
     def __init__(
         self,
         feature_dimension: int,
-        hidden_dimension: int,
+        transformer_dimension: int,
+        fusion_dimension: int,
+        classifier_hidden_dimension: int,
         attention_tokens: int,
         attention_heads: int,
+        ffn_dimension: int,
         dropout: float,
         uncertainty_temperature: float,
     ) -> None:
         super().__init__()
         self.tokenizer = FeatureTokenizer(
-            feature_dimension, hidden_dimension, attention_tokens
+            feature_dimension, transformer_dimension, attention_tokens
         )
         self.intra_blocks = nn.ModuleList(
-            TransformerBlock(hidden_dimension, attention_heads, dropout) for _ in range(2)
+            TransformerBlock(
+                transformer_dimension, attention_heads, dropout, ffn_dimension
+            )
+            for _ in range(2)
         )
         self.auxiliary_classifiers = nn.ModuleList(
-            nn.Linear(hidden_dimension, 1) for _ in range(2)
+            nn.Linear(transformer_dimension, 1) for _ in range(2)
         )
         self.cross_a_from_b = CrossAttentionBlock(
-            hidden_dimension, attention_heads, dropout
+            transformer_dimension, attention_heads, dropout, ffn_dimension
         )
         self.cross_b_from_a = CrossAttentionBlock(
-            hidden_dimension, attention_heads, dropout
+            transformer_dimension, attention_heads, dropout, ffn_dimension
         )
-        self.final_projection = nn.Linear(hidden_dimension * 4, hidden_dimension)
-        self.batch_norm = nn.BatchNorm1d(hidden_dimension)
+        self.final_projection = nn.Linear(transformer_dimension * 4, fusion_dimension)
+        self.batch_norm = nn.BatchNorm1d(fusion_dimension)
         self.final_classifier = nn.Sequential(
-            nn.Linear(hidden_dimension, hidden_dimension),
+            nn.Linear(fusion_dimension, classifier_hidden_dimension),
             nn.ReLU(),
-            nn.Linear(hidden_dimension, 1),
+            nn.Linear(classifier_hidden_dimension, 1),
         )
         self.uncertainty_temperature = float(uncertainty_temperature)
 

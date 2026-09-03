@@ -1,0 +1,6 @@
+{
+  "inherits": "center_a.json",
+  "experiment": {"name": "grain_center_a_formal", "architecture_manifest": "configs/architecture_grain_official.json"},
+  "model": {"feature_dimension": 120, "patient_dimension": 120, "relation_dimension": 120, "gat_hidden_dimension": 120, "transformer_dimension": 120, "fusion_dimension": 120, "classifier_hidden_dimension": 120, "attention_tokens": 1, "transformer_ffn_dimension": 2048, "relation_activation": "relu", "relation_alpha": 3.0, "relation_gamma": 1.0, "graph_attention_heads": 2, "graph_layers": 2, "fusion_attention_heads": 4, "gat_dropout": 0.2, "transformer_dropout": 0.1, "parameter_status": "FROZEN_PHASE_4C"},
+  "training": {"epochs": 100, "batch_size": 32, "optimizer": "adam", "learning_rate": 0.0001, "weight_decay": 0.0005, "scheduler": null, "k_selection": {"mode": "validation", "fixed_k": null, "search_epochs": 100}, "seed_protocol": "base_seed_plus_zero_based_outer_fold"}
+}

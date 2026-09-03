@@ -15,11 +15,16 @@ class AnchorGraphImputer(nn.Module):
     Target nodes never send messages to another target patient.
     """
 
-    def __init__(self, feature_dimension: int, dropout: float) -> None:
+    def __init__(
+        self, feature_dimension: int, hidden_dimension: int, dropout: float
+    ) -> None:
         super().__init__()
         self.feature_dimension = int(feature_dimension)
         self.modality_gat = nn.ModuleList(
-            TwoLayerTwoHeadGAT(self.feature_dimension, dropout=dropout) for _ in range(2)
+            TwoLayerTwoHeadGAT(
+                self.feature_dimension, hidden_dimension, dropout=dropout
+            )
+            for _ in range(2)
         )
 
     def forward(
@@ -59,4 +64,3 @@ class AnchorGraphImputer(nn.Module):
         observed = modality_mask.to(dtype=target_features.dtype).unsqueeze(-1)
         updated = reconstructed + observed * target_features
         return reconstructed, updated
-

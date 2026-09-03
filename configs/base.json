@@ -30,15 +30,20 @@
     "feature_dimension": null,
     "patient_dimension": null,
     "relation_dimension": null,
+    "gat_hidden_dimension": null,
+    "transformer_dimension": null,
     "fusion_dimension": null,
+    "classifier_hidden_dimension": null,
     "attention_tokens": null,
+    "transformer_ffn_dimension": null,
     "relation_activation": null,
     "relation_alpha": null,
     "relation_gamma": null,
     "graph_attention_heads": 2,
     "graph_layers": 2,
     "fusion_attention_heads": null,
-    "dropout": null
+    "gat_dropout": null,
+    "transformer_dropout": null
   },
   "training": {
     "epochs": 100,

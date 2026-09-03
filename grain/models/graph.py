@@ -10,7 +10,12 @@ from .types import GraphSelection
 
 
 def _activation(name: str) -> nn.Module:
-    choices = {"relu": nn.ReLU(), "gelu": nn.GELU(), "tanh": nn.Tanh()}
+    choices = {
+        "identity": nn.Identity(),
+        "relu": nn.ReLU(),
+        "gelu": nn.GELU(),
+        "tanh": nn.Tanh(),
+    }
     if name not in choices:
         raise ValueError(f"Unsupported relation activation {name!r}")
     return choices[name]
@@ -102,4 +107,3 @@ class AdaptivePatientGraph(nn.Module):
             selected_mask=selected_mask,
             effective_k=effective_k,
         )
-

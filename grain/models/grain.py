@@ -30,21 +30,26 @@ class GRAIN(nn.Module):
         feature_dimension: int,
         patient_dimension: int,
         relation_dimension: int,
+        gat_hidden_dimension: int,
+        transformer_dimension: int,
         fusion_dimension: int,
+        classifier_hidden_dimension: int,
         attention_tokens: int,
         attention_heads: int,
+        transformer_ffn_dimension: int,
         relation_activation: str,
         relation_alpha: float,
         relation_gamma: float,
         requested_k: int,
-        dropout: float,
+        gat_dropout: float,
+        transformer_dropout: float,
         uncertainty_temperature: float,
     ) -> None:
         super().__init__()
-        if feature_dimension % 2 != 0:
-            raise ValueError("feature_dimension must be divisible by the two GAT heads")
-        if fusion_dimension % attention_heads != 0:
-            raise ValueError("fusion_dimension must be divisible by attention_heads")
+        if feature_dimension % 2 != 0 or gat_hidden_dimension % 2 != 0:
+            raise ValueError("GAT input/output dimensions must support two heads")
+        if transformer_dimension % attention_heads != 0:
+            raise ValueError("transformer_dimension must be divisible by attention_heads")
         self.feature_dimension = int(feature_dimension)
         self.requested_k = int(requested_k)
         self.patient_representation = MaskAwarePatientRepresentation(
@@ -57,13 +62,18 @@ class GRAIN(nn.Module):
             alpha=relation_alpha,
             gamma=relation_gamma,
         )
-        self.imputer = AnchorGraphImputer(feature_dimension, dropout)
+        self.imputer = AnchorGraphImputer(
+            feature_dimension, gat_hidden_dimension, gat_dropout
+        )
         self.fusion = AdaptiveIntraInterFusion(
             feature_dimension=feature_dimension,
-            hidden_dimension=fusion_dimension,
+            transformer_dimension=transformer_dimension,
+            fusion_dimension=fusion_dimension,
+            classifier_hidden_dimension=classifier_hidden_dimension,
             attention_tokens=attention_tokens,
             attention_heads=attention_heads,
-            dropout=dropout,
+            ffn_dimension=transformer_ffn_dimension,
+            dropout=transformer_dropout,
             uncertainty_temperature=uncertainty_temperature,
         )
 
