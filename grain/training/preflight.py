@@ -6,7 +6,6 @@ import inspect
 import json
 from pathlib import Path
 import subprocess
-import tempfile
 from typing import Any
 
 import numpy as np
@@ -184,8 +183,13 @@ def run_preflight(config: dict[str, Any], repository_root: Path) -> dict[str, An
     try:
         output_dir = repository_root / str(config["experiment"]["output_root"])
         output_dir.mkdir(parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(dir=output_dir, prefix="preflight_", delete=True):
-            pass
+        probe = output_dir / ".formal_preflight_write_probe"
+        try:
+            with probe.open("x", encoding="utf-8") as handle:
+                handle.write("write-probe\n")
+        finally:
+            if probe.is_file():
+                probe.unlink()
         record("output_directory_writable", True, output_dir.as_posix())
     except Exception as error:
         record("output_directory_writable", False, str(error))
