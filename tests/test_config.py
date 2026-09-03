@@ -19,6 +19,25 @@ class ConfigTests(unittest.TestCase):
         with self.assertRaises(ConfigurationError):
             validate_config(config)
 
+    def test_phase5a_formal_configs_are_frozen(self) -> None:
+        for filename, output_subdir, feature_dimension in (
+            ("formal_center_a.json", "formal_center_a", 120),
+            ("formal_center_b.json", "formal_center_b", 60),
+        ):
+            with self.subTest(filename=filename):
+                config = load_config(Path(__file__).parents[1] / "configs" / filename)
+                self.assertEqual(config["experiment"]["output_subdir"], output_subdir)
+                self.assertEqual(config["model"]["feature_dimension"], feature_dimension)
+                self.assertEqual(config["training"]["epochs"], 100)
+                self.assertEqual(config["training"]["batch_size"], 32)
+                self.assertEqual(config["training"]["optimizer"], "adam")
+                self.assertEqual(config["training"]["learning_rate"], 1e-4)
+                self.assertEqual(config["training"]["weight_decay"], 5e-4)
+                self.assertIsNone(config["training"]["scheduler"])
+                self.assertEqual(config["training"]["k_selection"]["mode"], "validation")
+                self.assertEqual(config["training"]["k_selection"]["search_epochs"], 100)
+                self.assertEqual(config["evaluation"]["threshold"], 0.5)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -145,6 +145,23 @@ class TrainingProtocolTests(unittest.TestCase):
         probability = np.asarray([0.10, 0.40, 0.35, 0.30])
         self.assertAlmostEqual(compute_metrics(labels, probability).auc, 0.75)
 
+    def test_prediction_artifact_contains_sample_id_and_probability(self) -> None:
+        result = EvaluationResult.create(
+            split="test",
+            fold=0,
+            sample_ids=("sample_a", "sample_b"),
+            labels=np.asarray([0, 1]),
+            probabilities=np.asarray([0.2, 0.8]),
+            loss=1.0,
+            threshold=0.5,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "predictions.csv"
+            result.write_csv(path)
+            header = path.read_text(encoding="utf-8").splitlines()[0]
+            self.assertIn("sample_id", header.split(","))
+            self.assertIn("probability", header.split(","))
+
     def test_same_seed_reproducible_and_different_seed_independent(self) -> None:
         same_a, same_b, different = self.runtime(9), self.runtime(9), self.runtime(10)
         state_a = same_a.model.state_dict()

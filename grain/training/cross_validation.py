@@ -12,7 +12,7 @@ from grain.evaluation import EvaluationResult
 from grain.models import AnchorFeatureBank, GRAIN
 from grain.utils.reproducibility import set_global_seed
 
-from .trainer import build_anchor_feature_bank, train_one_epoch, validate
+from .trainer import EpochResult, build_anchor_feature_bank, train_one_epoch, validate
 
 
 @dataclass
@@ -126,6 +126,7 @@ def select_k_on_validation(
     seed: int,
     epochs: int,
     observer: Callable[[int, EvaluationResult], None] | None = None,
+    epoch_observer: Callable[[int, int, EpochResult], None] | None = None,
 ) -> tuple[int, tuple[KCandidateResult, ...]]:
     """Train candidates with train/validation only; no test argument exists."""
 
@@ -148,7 +149,7 @@ def select_k_on_validation(
             seed=seed,
         )
         for epoch in range(epochs):
-            train_one_epoch(
+            training_result = train_one_epoch(
                 model=runtime.model,
                 optimizer=runtime.optimizer,
                 cohort=cohort,
@@ -163,6 +164,8 @@ def select_k_on_validation(
                 balance_weight=float(config["training"]["loss_weights"]["balance"]),
                 auxiliary_weight=float(config["training"]["loss_weights"]["auxiliary"]),
             )
+            if epoch_observer is not None:
+                epoch_observer(candidate, epoch, training_result)
             if runtime.scheduler is not None:
                 runtime.scheduler.step()
         validation = validate(

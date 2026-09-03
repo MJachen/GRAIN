@@ -25,7 +25,9 @@ experimental practice.
   frozen. Center A and Center B are eligible for internal full CV. Mixed A+B
   is blocked by 14 partial-modality rows; Mixed-to-C external inference is also
   blocked by feature-space mismatch.
-- Phase 5 onward — full reproduction, baselines and ablations: not started.
+- Phase 5A — formal Center A/B runner and independent integrity audit are
+  implemented; formal execution is permitted only after regression tests,
+  preflight and a clean commit.
 - No paper result is claimed reproduced by this bootstrap.
 
 ## Non-negotiable protocol rules
@@ -103,14 +105,16 @@ Run all Phase 1–3 tests:
 E:/cjj/anaconda3/envs/irae/python.exe -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-The future official entry point is reserved as:
+The Phase 5A formal entry points are:
 
 ```bash
-E:/cjj/anaconda3/envs/irae/python.exe scripts/run_cv.py --config configs/center_a.json
+E:/cjj/anaconda3/envs/irae/python.exe scripts/run_cv.py --config configs/formal_center_a.json
+E:/cjj/anaconda3/envs/irae/python.exe scripts/audit_formal_run.py --output outputs/formal_center_a
 ```
 
-At the current phase it validates the configuration and exits without
-full-CV training, preventing accidental entry into Phase 5.
+`run_cv.py` accepts only the frozen Center A/B formal configs. It refuses a
+dirty worktree or existing formal output directory, evaluates each outer test
+fold exactly once after checkpoint reload, and automatically runs the audit.
 
 The only enabled real-data experiment is the single-fold smoke:
 

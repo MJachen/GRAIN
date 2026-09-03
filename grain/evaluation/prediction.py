@@ -50,6 +50,7 @@ class EvaluationResult:
             writer = csv.DictWriter(
                 handle,
                 fieldnames=[
+                    "sample_id",
                     "patient_id_or_stable_sample_id",
                     "fold",
                     "split",
@@ -64,6 +65,7 @@ class EvaluationResult:
             ):
                 writer.writerow(
                     {
+                        "sample_id": sample_id,
                         "patient_id_or_stable_sample_id": sample_id,
                         "fold": self.fold,
                         "split": self.split,
