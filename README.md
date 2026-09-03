@@ -14,12 +14,14 @@ experimental practice.
 - Phase 1 — repository bootstrap: implemented.
 - Phase 2 — explicit data contract and patient-level split manifests:
   implemented and covered by unit tests.
-- Phase 2.5 — read-only legacy-data and exact-interpreter binding: implemented;
-  formal cohort identity remains blocked.
+- Phase 2.5 — read-only legacy-data and exact-interpreter binding: implemented.
 - Phase 3 — label-free core GRAIN model and paper losses: implemented and
   covered by synthetic shape, isolation, uncertainty and gradient tests.
-- Phase 4 onward — trainer, evaluation, full reproduction, baselines and
-  ablations: intentionally not implemented yet.
+- Phase 4A — train/validation/test, validation-only checkpoint/K selection and
+  probability metric infrastructure: implemented.
+- Phase 4B — one real-data fold is available only through the explicitly
+  labelled development smoke entry point.
+- Phase 5 onward — full reproduction, baselines and ablations: not started.
 - No paper result is claimed reproduced by this bootstrap.
 
 ## Non-negotiable protocol rules
@@ -73,7 +75,15 @@ The old data root is configured once as `data.source_root`. Code contains no
 cohort-specific absolute data path and the repository path policy rejects
 writes outside this repository's output areas.
 
-## Cohort bootstrap (currently blocked)
+## Cohort and sample identity
+
+Bound legacy tables are the operative experimental datasets. Deterministic IDs
+such as `centerA_row_000001` are experiment-local stable sample identifiers,
+not recovered clinical patient identities. Paper cohort-count agreement and
+historical identity recovery are recorded provenance limitations, not training
+gates.
+
+## Optional explicit-manifest bootstrap
 
 Create reproducible outer/validation manifests after an approved cohort
 manifest with real de-identified patient IDs is available:
@@ -96,7 +106,15 @@ E:/cjj/anaconda3/envs/irae/python.exe scripts/run_cv.py --config configs/center_
 ```
 
 At the current phase it validates the configuration and exits without
-training, preventing accidental use of an incomplete pipeline.
+full-CV training, preventing accidental entry into Phase 5.
+
+The only enabled real-data experiment is the single-fold smoke:
+
+```bash
+E:/cjj/anaconda3/envs/irae/python.exe scripts/run_smoke_fold.py --config configs/smoke_center_a.json --fold 0
+```
+
+Its output is always marked `DEVELOPMENT SMOKE TEST - NOT PAPER RESULT`.
 
 ## Reproducibility layout
 

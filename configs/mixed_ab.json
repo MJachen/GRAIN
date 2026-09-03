@@ -3,6 +3,8 @@
   "experiment": {"name": "grain_mixed_ab"},
   "data": {
     "feature_source": "data/merged_file.csv",
+    "sample_id_prefix": "mixedAB",
+    "expected_sha256": "748a7cc7b630d22cf56d611b8b50d9a75ec4f729a862190996da761ba0fbe391",
     "feature_source_alternatives": [
       {
         "path": "data/qilu&sd.csv",

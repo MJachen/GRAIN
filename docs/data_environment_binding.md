@@ -28,7 +28,9 @@ contain a trustworthy stable patient identifier. A numeric first feature
 column and the `Unnamed: 0` row index in the Center C candidate must not be
 promoted to official patient identities.
 
-Consequently, formal patient-level manifests remain blocked until an original
-anonymized case mapping or source cohort manifest is recovered. Synthetic IDs
-may be used only inside unit tests and cannot support a paper reproduction
-claim.
+By explicit project decision after Phase 2.5, historical identity recovery and
+paper cohort-count agreement are no longer formal-training gates. Each bound
+table now receives a deterministic experiment-local identifier of the form
+`<cohort>_row_XXXXXX`. This identifier is used only for split reproducibility,
+prediction alignment and paired analysis; it is never described as a recovered
+clinical patient identifier. The source fingerprint remains the data identity.

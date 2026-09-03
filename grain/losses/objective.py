@@ -68,6 +68,9 @@ def compute_grain_loss(
     original_features: Tensor,
     modality_mask: Tensor,
     *,
+    contrastive_original_features: Tensor | None = None,
+    contrastive_reconstructed_features: Tensor | None = None,
+    contrastive_complete_mask: Tensor | None = None,
     contrastive_temperature: float,
     balance_margin: float,
     contrastive_weight: float,
@@ -85,9 +88,13 @@ def compute_grain_loss(
         output.modality_logits, auxiliary_targets
     )
     contrastive = neighborhood_contrastive_loss(
-        original_features,
-        output.reconstructed_features,
-        modality_mask.all(dim=1),
+        original_features if contrastive_original_features is None else contrastive_original_features,
+        output.reconstructed_features
+        if contrastive_reconstructed_features is None
+        else contrastive_reconstructed_features,
+        modality_mask.all(dim=1)
+        if contrastive_complete_mask is None
+        else contrastive_complete_mask,
         contrastive_temperature,
     )
     balance = modality_balance_loss(output.modality_weights, balance_margin)

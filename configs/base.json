@@ -37,6 +37,7 @@
     "relation_gamma": null,
     "graph_attention_heads": 2,
     "graph_layers": 2,
+    "fusion_attention_heads": null,
     "dropout": null
   },
   "training": {
@@ -46,6 +47,8 @@
     "learning_rate": 0.0001,
     "weight_decay": 0.0,
     "checkpoint_metric": "validation_auc",
+    "scheduler": null,
+    "k_selection": {"mode": "validation", "fixed_k": null, "search_epochs": null},
     "loss_weights": {"ce": 1.0, "auxiliary": 1.0, "contrastive": 0.1, "balance": 0.01},
     "contrastive_temperature": 0.5,
     "uncertainty_temperature": 0.1,

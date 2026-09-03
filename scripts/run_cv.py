@@ -1,4 +1,4 @@
-"""Reserved official CV entry point; training begins only after Phase 3–5."""
+"""Reserved full-CV entry point; deliberately gated until Phase 5."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ def main() -> None:
     raise SystemExit(
         "Configuration is valid for experiment "
         f"{config['experiment']['name']!r}, but training is intentionally disabled "
-        "until the Phase 4-5 trainer and evaluation implementation is complete."
+        "until Phase 5 full-CV authorization. Use run_smoke_fold.py only for Phase 4B."
     )
 
 

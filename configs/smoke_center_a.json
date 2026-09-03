@@ -1,0 +1,25 @@
+{
+  "inherits": "center_a.json",
+  "experiment": {
+    "name": "development_smoke_center_a",
+    "purpose": "DEVELOPMENT SMOKE TEST - NOT PAPER RESULT"
+  },
+  "model": {
+    "feature_dimension": 120,
+    "patient_dimension": 32,
+    "relation_dimension": 32,
+    "fusion_dimension": 32,
+    "attention_tokens": 4,
+    "fusion_attention_heads": 4,
+    "relation_activation": "relu",
+    "relation_alpha": 3.0,
+    "relation_gamma": 1.0,
+    "dropout": 0.1,
+    "parameter_status": "development_only_unverified_architecture"
+  },
+  "training": {
+    "epochs": 3,
+    "batch_size": 32,
+    "k_selection": {"mode": "validation", "fixed_k": null, "search_epochs": 1}
+  }
+}

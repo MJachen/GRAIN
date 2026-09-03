@@ -118,9 +118,54 @@ def generate_nested_manifests(
     return manifests
 
 
+def generate_nested_manifests_from_arrays(
+    sample_ids: Iterable[str],
+    labels: Iterable[int],
+    dataset_name: str,
+    n_outer_folds: int = 10,
+    validation_fraction: float = 0.15,
+    seed: int = 42,
+) -> list[SplitManifest]:
+    """Nested patient/sample-level splits for a fingerprinted legacy table."""
+
+    ids = np.asarray(tuple(sample_ids), dtype=object)
+    target = np.asarray(tuple(labels), dtype=np.int64)
+    if ids.shape != target.shape:
+        raise SplitValidationError("sample_ids and labels must have equal length")
+    if len(np.unique(ids)) != len(ids):
+        raise SplitValidationError("sample IDs must be unique")
+    class_counts = np.bincount(target, minlength=2)
+    if class_counts.min() < n_outer_folds:
+        raise SplitValidationError("Each class must support every outer fold")
+    outer = StratifiedKFold(n_splits=n_outer_folds, shuffle=True, random_state=seed)
+    manifests = []
+    for fold_index, (development_index, test_index) in enumerate(
+        outer.split(ids, target)
+    ):
+        development_ids = ids[development_index]
+        development_labels = target[development_index]
+        train_ids, validation_ids = train_test_split(
+            development_ids,
+            test_size=validation_fraction,
+            stratify=development_labels,
+            random_state=seed + fold_index + 1,
+        )
+        manifest = SplitManifest(
+            schema_version=2,
+            dataset_name=dataset_name,
+            outer_fold=fold_index,
+            seed=seed,
+            train=tuple(sorted(map(str, train_ids))),
+            validation=tuple(sorted(map(str, validation_ids))),
+            test=tuple(sorted(map(str, ids[test_index]))),
+        )
+        manifest.validate(ids)
+        manifests.append(manifest)
+    return manifests
+
+
 def write_manifests(manifests: Iterable[SplitManifest], output_dir: str | Path) -> None:
     output_dir = Path(output_dir)
     for manifest in manifests:
         filename = f"{manifest.dataset_name}_fold_{manifest.outer_fold:02d}.json"
         manifest.to_json(output_dir / filename)
-

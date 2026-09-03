@@ -3,6 +3,8 @@
   "experiment": {"name": "grain_center_a"},
   "data": {
     "feature_source": "data/qilu_spleen_new.csv",
+    "sample_id_prefix": "centerA",
+    "expected_sha256": "f62f2d7d9e222dbdf31acd5e9bc699a26d0a13b13c3c98f0e45dea96e0a3f450",
     "provenance_status": "conflict",
     "required_center": "A",
     "legacy_layout": {"skip_leading_columns": 0, "plain_dimension": 120, "ce_dimension": 120, "missing_rule_for_inventory_only": "all_nan_block"},

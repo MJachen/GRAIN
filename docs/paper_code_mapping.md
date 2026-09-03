@@ -8,7 +8,7 @@ dimension, `T` within-patient tokens, and `H` fusion dimension.
 | Paper item | Paper description | Official implementation | Input → output | Verification |
 |---|---|---|---|---|
 | Data contract | Plain CT, CE CT, explicit availability and stable patient ID | `grain/data/schema.py`; `grain/data/dataset.py` | manifest row → named sample and bool mask `[M]` | Unit tested; real identity BLOCKED |
-| Patient-level nested split | Outer stratified 10-fold plus inner validation | `grain/data/splits.py` | cohort → disjoint train/validation/test IDs | Unit tested; formal manifests BLOCKED |
+| Patient/sample-level nested split | Outer stratified 10-fold plus inner validation | `grain/data/splits.py` | stable IDs → disjoint train/validation/test IDs | Unit tested; legacy rows use experiment-local stable IDs |
 | Eq. (2) | MedicalNet 3D-ResNet-50 feature extraction | External legacy feature artifact only | CT → `h_n^m [D]` | UNVERIFIED; extractor provenance unavailable |
 | Eq. (3)–(4) | Availability-mask weighted patient representation | `MaskAwarePatientRepresentation.forward` | `[B,M,D]`, `[B,M]` → `Q [B,P]` | Shape/mask/gradient tested |
 | Eq. (5)–(8) | Separate patient embeddings and relation enhancement | `AdaptivePatientGraph.forward` | target `[B,P]`, anchors `[A,P]` → relation embeddings | Gradient tested; activation/scales UNVERIFIED |
@@ -30,11 +30,12 @@ dimension, `T` within-patient tokens, and `H` fusion dimension.
 | Eq. (39) | `L_ce + L_aux + lambda L_cl + mu L_bc` | `compute_grain_loss` | component losses → total scalar | All components stay in autograd graph |
 | Label-free inference | Uncertainty is prediction entropy, not label-derived CE | `GRAIN.forward` | features/mask/anchor bank/IDs only | Signature invariant tested |
 | Target isolation | No target-target transductive interaction | complete model | adding unrelated batch target leaves prediction unchanged | Unit tested in eval mode |
-| Validation-AUC checkpoint rule | No outer-test model selection | config invariant | resolved config → future trainer | Trainer deferred to Phase 4 |
-| K in 2–10 | Select only inside outer development data | config and split contract | candidates → future selection trace | Selection routine deferred to Phase 4 |
+| Validation-AUC checkpoint rule | No outer-test model selection | `ValidationCheckpointManager` | validation result → best checkpoint | Test result rejection and reload tested |
+| K in 2–10 | Select only inside outer development data | `select_k_on_validation` | train/validation → candidate trace and selected K | Test-blindness tested |
 | Table II/VI/VII | Center A/B, mixed A+B, external Center C | `configs/*.json` | approved data/splits → future experiment | UNVERIFIED; cohort provenance conflicts |
 | Table III–V | Graph/fusion/loss ablations | future Phase 8 | shared official protocol | Not implemented |
-| Probability metrics, paired DeLong, Holm | Patient-aligned evaluation/statistics | future `grain/evaluation/` | prediction CSV → metrics/tests | Deferred to Phase 5 |
+| Probability metrics | ACC/F1/REC/AUC/PRE/SPEC/NPV; positive class 1 | `grain/evaluation/metrics.py` | labels/probabilities → metrics | Probability-ranking AUC tested |
+| Paired DeLong and Holm | Patient-aligned statistics | future statistics module | prediction CSV → paired tests | Deferred beyond Phase 4 |
 
 ## Unresolved architecture provenance
 

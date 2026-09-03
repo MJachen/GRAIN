@@ -63,6 +63,15 @@ def validate_config(config: dict[str, Any]) -> None:
                 raise ConfigurationError(f"data.modalities.{name}.{field} is required")
         if item["dimension"] is not None and int(item["dimension"]) <= 0:
             raise ConfigurationError(f"{name} dimension must be positive")
+    model_dimension = config.get("model", {}).get("feature_dimension")
+    modality_dimensions = [modalities[name]["dimension"] for name in ("plain", "ce")]
+    if model_dimension is not None and any(
+        value is not None and int(value) != int(model_dimension)
+        for value in modality_dimensions
+    ):
+        raise ConfigurationError(
+            "model.feature_dimension must match each configured within-cohort modality dimension"
+        )
 
     split = config["split"]
     if int(split["n_outer_folds"]) < 2:
@@ -75,5 +84,10 @@ def validate_config(config: dict[str, Any]) -> None:
 
     if config["training"].get("checkpoint_metric") != "validation_auc":
         raise ConfigurationError("Checkpoint selection must use validation_auc")
+    k_selection = config["training"].get("k_selection", {})
+    if k_selection.get("mode") not in {"fixed", "validation"}:
+        raise ConfigurationError("training.k_selection.mode must be fixed or validation")
+    if k_selection.get("mode") == "fixed" and k_selection.get("fixed_k") not in range(2, 11):
+        raise ConfigurationError("fixed_k must be between 2 and 10")
     if int(config["evaluation"].get("positive_class", -1)) != 1:
         raise ConfigurationError("The official positive class must be 1")

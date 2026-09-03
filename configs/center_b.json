@@ -3,6 +3,8 @@
   "experiment": {"name": "grain_center_b"},
   "data": {
     "feature_source": "data/sd_spleen_label2.csv",
+    "sample_id_prefix": "centerB",
+    "expected_sha256": "f285ad27b77d2aaca39184b56b6fcd5e385b9fc082a40c8669f38753f6b13b53",
     "provenance_status": "conflict",
     "required_center": "B",
     "legacy_layout": {"skip_leading_columns": 0, "plain_dimension": 60, "ce_dimension": 60, "missing_rule_for_inventory_only": "all_nan_block"},
