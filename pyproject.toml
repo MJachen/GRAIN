@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grain-official"
+version = "0.1.0"
+description = "Official leakage-safe implementation of GRAIN"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "numpy==1.26.4",
+  "pandas==2.2.2",
+  "PyYAML==6.0.2",
+  "scikit-learn==1.5.1",
+  "scipy==1.13.1",
+  "torch==2.3.1",
+]
+
+[tool.setuptools.packages.find]
+include = ["grain*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+

@@ -1,0 +1,13 @@
+inherits: base.yaml
+experiment:
+  name: grain_external_center_c
+data:
+  cohort_manifest: data/manifests/center_c.csv
+  feature_root: data/features
+  required_center: C
+evaluation:
+  external_only: true
+  threshold: 0.5
+  positive_class: 1
+  save_patient_predictions: true
+

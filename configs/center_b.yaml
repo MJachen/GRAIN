@@ -1,0 +1,8 @@
+inherits: base.yaml
+experiment:
+  name: grain_center_b
+data:
+  cohort_manifest: data/manifests/center_b.csv
+  feature_root: data/features
+  required_center: B
+

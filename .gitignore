@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.venv/
+venv/
+outputs/*
+!outputs/README.md
+/data/
+*.pt
+*.pth
+*.joblib
+*.csv
+!.github/**/*.csv
+.idea/
+.vscode/
+.DS_Store
