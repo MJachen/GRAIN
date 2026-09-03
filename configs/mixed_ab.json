@@ -1,0 +1,18 @@
+{
+  "inherits": "base.json",
+  "experiment": {"name": "grain_mixed_ab"},
+  "data": {
+    "feature_source": "data/merged_file.csv",
+    "feature_source_alternatives": [
+      {
+        "path": "data/qilu&sd.csv",
+        "role": "active input in zhexiantu.py result-generation script",
+        "legacy_layout": {"skip_leading_columns": 0, "plain_dimension": 120, "ce_dimension": 120, "missing_rule_for_inventory_only": "all_nan_block"}
+      }
+    ],
+    "provenance_status": "conflict",
+    "required_centers": ["A", "B"],
+    "legacy_layout": {"skip_leading_columns": 0, "plain_dimension": 60, "ce_dimension": 60, "missing_rule_for_inventory_only": "all_nan_block"},
+    "modalities": {"plain": {"dimension": 60}, "ce": {"dimension": 60}}
+  }
+}

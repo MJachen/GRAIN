@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "source_root": "E:/EXPS/attention",
+  "source_access": "read_only",
+  "patient_identity_provenance": "BLOCKED",
+  "patient_identity_reason": "Clinical feature tables do not contain a verified stable patient ID; row numbers are not accepted as identity.",
+  "datasets": [
+    {
+      "absolute_path": "E:/EXPS/attention/data/qilu_spleen_new.csv",
+      "filename": "qilu_spleen_new.csv",
+      "file_size_bytes": 376898,
+      "sha256": "f62f2d7d9e222dbdf31acd5e9bc699a26d0a13b13c3c98f0e45dea96e0a3f450",
+      "rows": 221,
+      "columns": 241,
+      "label_column": "label",
+      "label_distribution": {
+        "negative_0": 139,
+        "positive_1": 82
+      },
+      "feature_dimension": 240,
+      "modality_layout": {
+        "skip_leading_columns": 0,
+        "plain_columns_zero_based": [
+          0,
+          119
+        ],
+        "ce_columns_zero_based": [
+          120,
+          239
+        ],
+        "order": [
+          "plain",
+          "ce"
+        ],
+        "availability_rule_for_inventory_only": "block is not entirely NaN"
+      },
+      "modality_availability": {
+        "plain_only": 185,
+        "ce_only": 23,
+        "both": 13,
+        "neither": 0
+      },
+      "patient_identity": {
+        "status": "blocked",
+        "reason": "No configured stable patient ID column",
+        "first_column": "0"
+      },
+      "confidence": "CONFLICT",
+      "paper_expected": {
+        "total": 160,
+        "positive": 48,
+        "plain": 144,
+        "ce": 22,
+        "both": 6
+      },
+      "legacy_code_evidence": [
+        "attention/trainerv1.py:164",
+        "attention/modloss.py:127"
+      ],
+      "dataset": "grain_center_a"
+    },
+    {
+      "absolute_path": "E:/EXPS/attention/data/sd_spleen_label2.csv",
+      "filename": "sd_spleen_label2.csv",
+      "file_size_bytes": 265952,
+      "sha256": "f285ad27b77d2aaca39184b56b6fcd5e385b9fc082a40c8669f38753f6b13b53",
+      "rows": 185,
+      "columns": 121,
+      "label_column": "label",
+      "label_distribution": {
+        "negative_0": 131,
+        "positive_1": 54
+      },
+      "feature_dimension": 120,
+      "modality_layout": {
+        "skip_leading_columns": 0,
+        "plain_columns_zero_based": [
+          0,
+          59
+        ],
+        "ce_columns_zero_based": [
+          60,
+          119
+        ],
+        "order": [
+          "plain",
+          "ce"
+        ],
+        "availability_rule_for_inventory_only": "block is not entirely NaN"
+      },
+      "modality_availability": {
+        "plain_only": 14,
+        "ce_only": 0,
+        "both": 171,
+        "neither": 0
+      },
+      "patient_identity": {
+        "status": "blocked",
+        "reason": "No configured stable patient ID column",
+        "first_column": "0"
+      },
+      "confidence": "CONFLICT",
+      "paper_expected": {
+        "total": 185,
+        "positive": 39,
+        "plain": 65,
+        "ce": 165,
+        "both": 45
+      },
+      "legacy_code_evidence": [
+        "attention/crossval.py:303",
+        "attention/difffusion.py:98"
+      ],
+      "dataset": "grain_center_b"
+    },
+    {
+      "absolute_path": "E:/EXPS/attention/data/merged_file.csv",
+      "filename": "merged_file.csv",
+      "file_size_bytes": 477040,
+      "sha256": "748a7cc7b630d22cf56d611b8b50d9a75ec4f729a862190996da761ba0fbe391",
+      "rows": 344,
+      "columns": 121,
+      "label_column": "label",
+      "label_distribution": {
+        "negative_0": 238,
+        "positive_1": 106
+      },
+      "feature_dimension": 120,
+      "modality_layout": {
+        "skip_leading_columns": 0,
+        "plain_columns_zero_based": [
+          0,
+          59
+        ],
+        "ce_columns_zero_based": [
+          60,
+          119
+        ],
+        "order": [
+          "plain",
+          "ce"
+        ],
+        "availability_rule_for_inventory_only": "block is not entirely NaN"
+      },
+      "modality_availability": {
+        "plain_only": 0,
+        "ce_only": 0,
+        "both": 344,
+        "neither": 0
+      },
+      "patient_identity": {
+        "status": "blocked",
+        "reason": "No configured stable patient ID column",
+        "first_column": "0"
+      },
+      "confidence": "CONFLICT",
+      "paper_expected": {
+        "total": 345,
+        "positive": 87
+      },
+      "legacy_code_evidence": [
+        "attention/search4k.py:100",
+        "attention/trainerv1.py:165 (commented)"
+      ],
+      "dataset": "grain_mixed_ab"
+    },
+    {
+      "absolute_path": "E:/EXPS/attention/data/qilu&sd.csv",
+      "filename": "qilu&sd.csv",
+      "file_size_bytes": 664673,
+      "sha256": "cc2baf3c64228f0ba3cb83400c8add34493c38382330421265dc5b0f3c11e24b",
+      "rows": 406,
+      "columns": 241,
+      "label_column": "label",
+      "label_distribution": {
+        "negative_0": 270,
+        "positive_1": 136
+      },
+      "feature_dimension": 240,
+      "modality_layout": {
+        "skip_leading_columns": 0,
+        "plain_columns_zero_based": [
+          0,
+          119
+        ],
+        "ce_columns_zero_based": [
+          120,
+          239
+        ],
+        "order": [
+          "plain",
+          "ce"
+        ],
+        "availability_rule_for_inventory_only": "block is not entirely NaN"
+      },
+      "modality_availability": {
+        "plain_only": 370,
+        "ce_only": 23,
+        "both": 13,
+        "neither": 0
+      },
+      "patient_identity": {
+        "status": "blocked",
+        "reason": "No configured stable patient ID column",
+        "first_column": "0"
+      },
+      "confidence": "CONFLICT",
+      "paper_expected": {
+        "total": 345,
+        "positive": 87
+      },
+      "legacy_code_evidence": [
+        "attention/zhexiantu.py:205"
+      ],
+      "dataset": "grain_mixed_ab_alternative_1",
+      "candidate_role": "active input in zhexiantu.py result-generation script"
+    },
+    {
+      "absolute_path": "E:/EXPS/attention/data/qfsALL_ln_new.csv",
+      "filename": "qfsALL_ln_new.csv",
+      "file_size_bytes": 186050,
+      "sha256": "06648cfcdbce12e055ece3babeeeb07a10aa0ab38a35c58316b1fdab388767c2",
+      "rows": 83,
+      "columns": 242,
+      "label_column": "label",
+      "label_distribution": {
+        "negative_0": 60,
+        "positive_1": 23
+      },
+      "feature_dimension": 240,
+      "modality_layout": {
+        "skip_leading_columns": 1,
+        "plain_columns_zero_based": [
+          1,
+          120
+        ],
+        "ce_columns_zero_based": [
+          121,
+          240
+        ],
+        "order": [
+          "plain",
+          "ce"
+        ],
+        "availability_rule_for_inventory_only": "block is not entirely NaN"
+      },
+      "modality_availability": {
+        "plain_only": 46,
+        "ce_only": 0,
+        "both": 37,
+        "neither": 0
+      },
+      "patient_identity": {
+        "status": "blocked",
+        "reason": "No configured stable patient ID column",
+        "first_column": "Unnamed: 0"
+      },
+      "confidence": "LIKELY",
+      "paper_expected": {
+        "total": 83,
+        "positive": 23,
+        "plain": 83,
+        "ce": 36,
+        "both": 36
+      },
+      "legacy_code_evidence": [
+        "attention/test4sth.py:272",
+        "attention/evaluate.py:68 references a currently missing external file"
+      ],
+      "dataset": "grain_external_center_c"
+    }
+  ]
+}

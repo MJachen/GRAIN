@@ -1,8 +1,0 @@
-inherits: base.yaml
-experiment:
-  name: grain_mixed_ab
-data:
-  cohort_manifest: data/manifests/mixed_ab.csv
-  feature_root: data/features
-  required_centers: [A, B]
-

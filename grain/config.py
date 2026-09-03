@@ -1,12 +1,11 @@
-"""Configuration loading with explicit inheritance and validation."""
+"""Standard-library JSON configuration loading and validation."""
 
 from __future__ import annotations
 
 from copy import deepcopy
+import json
 from pathlib import Path
 from typing import Any
-
-import yaml
 
 
 class ConfigurationError(ValueError):
@@ -24,11 +23,15 @@ def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any
 
 
 def load_config(path: str | Path) -> dict[str, Any]:
-    """Load YAML, resolve one local parent config and validate invariants."""
+    """Load JSON, resolve one local parent config and validate invariants."""
 
     config_path = Path(path).resolve()
+    if config_path.suffix.lower() != ".json":
+        raise ConfigurationError(
+            "Official configs use JSON so the legacy irae environment needs no new package."
+        )
     with config_path.open("r", encoding="utf-8") as handle:
-        current = yaml.safe_load(handle) or {}
+        current = json.load(handle)
     if not isinstance(current, dict):
         raise ConfigurationError("The configuration root must be a mapping.")
 

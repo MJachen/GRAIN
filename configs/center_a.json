@@ -1,0 +1,11 @@
+{
+  "inherits": "base.json",
+  "experiment": {"name": "grain_center_a"},
+  "data": {
+    "feature_source": "data/qilu_spleen_new.csv",
+    "provenance_status": "conflict",
+    "required_center": "A",
+    "legacy_layout": {"skip_leading_columns": 0, "plain_dimension": 120, "ce_dimension": 120, "missing_rule_for_inventory_only": "all_nan_block"},
+    "modalities": {"plain": {"dimension": 120}, "ce": {"dimension": 120}}
+  }
+}

@@ -21,7 +21,7 @@ def main() -> None:
     raise SystemExit(
         "Configuration is valid for experiment "
         f"{config['experiment']['name']!r}, but training is intentionally disabled "
-        "until the Phase 3-5 implementation and tests are complete."
+        "until the Phase 4-5 trainer and evaluation implementation is complete."
     )
 
 

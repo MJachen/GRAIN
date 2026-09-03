@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "experiment": {"name": "grain", "seed": 42, "output_root": "outputs"},
+  "environment": {
+    "python_executable": "E:/cjj/anaconda3/envs/irae/python.exe",
+    "environment_name": "irae"
+  },
+  "data": {
+    "source_root": "E:/EXPS/attention",
+    "cohort_manifest": null,
+    "feature_source": null,
+    "provenance_status": "unverified",
+    "patient_id_column": null,
+    "center_column": null,
+    "label_column": "label",
+    "positive_class": 1,
+    "modalities": {
+      "plain": {"available_column": null, "path_column": null, "dimension": null},
+      "ce": {"available_column": null, "path_column": null, "dimension": null}
+    }
+  },
+  "split": {
+    "n_outer_folds": 10,
+    "validation_fraction": 0.15,
+    "seed": 42,
+    "output_dir": "splits",
+    "k_candidates": [2, 3, 4, 5, 6, 7, 8, 9, 10]
+  },
+  "model": {
+    "feature_dimension": null,
+    "patient_dimension": null,
+    "relation_dimension": null,
+    "fusion_dimension": null,
+    "attention_tokens": null,
+    "relation_activation": null,
+    "relation_alpha": null,
+    "relation_gamma": null,
+    "graph_attention_heads": 2,
+    "graph_layers": 2,
+    "dropout": null
+  },
+  "training": {
+    "epochs": 100,
+    "batch_size": 32,
+    "optimizer": "adam",
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0,
+    "checkpoint_metric": "validation_auc",
+    "loss_weights": {"ce": 1.0, "auxiliary": 1.0, "contrastive": 0.1, "balance": 0.01},
+    "contrastive_temperature": 0.5,
+    "uncertainty_temperature": 0.1,
+    "balance_margin": 0.3
+  },
+  "evaluation": {"threshold": 0.5, "positive_class": 1, "save_patient_predictions": true}
+}

@@ -14,8 +14,12 @@ experimental practice.
 - Phase 1 — repository bootstrap: implemented.
 - Phase 2 — explicit data contract and patient-level split manifests:
   implemented and covered by unit tests.
-- Phase 3 onward — GRAIN model, trainer, evaluation, full reproduction,
-  baselines and ablations: intentionally not implemented yet.
+- Phase 2.5 — read-only legacy-data and exact-interpreter binding: implemented;
+  formal cohort identity remains blocked.
+- Phase 3 — label-free core GRAIN model and paper losses: implemented and
+  covered by synthetic shape, isolation, uncertainty and gradient tests.
+- Phase 4 onward — trainer, evaluation, full reproduction, baselines and
+  ablations: intentionally not implemented yet.
 - No paper result is claimed reproduced by this bootstrap.
 
 ## Non-negotiable protocol rules
@@ -50,31 +54,45 @@ Observed feature vectors must be finite and match the configured modality
 dimension. A false availability flag is authoritative even if a path is
 accidentally present.
 
-Feature dimension, hidden dimension and dropout remain `null` until the
-approved feature extractor artifact and the corresponding paper specification
-are reconciled. Legacy defaults are deliberately not promoted to official
-configuration values.
+Paper-undefined relation/fusion dimensions, attention tokenization, relation
+activation/scales and dropout remain `null` until the approved feature artifact
+and implementation provenance are reconciled. Legacy defaults are deliberately
+not promoted to official configuration values.
 
-## Bootstrap usage
+## Bound environment and development usage
+
+Every command must use the interpreter that the historical attention IDE
+configuration identifies. Do not install `requirements.txt` into it; that file
+documents the observed environment.
+
+```bash
+E:/cjj/anaconda3/envs/irae/python.exe scripts/check_environment.py
+```
+
+The old data root is configured once as `data.source_root`. Code contains no
+cohort-specific absolute data path and the repository path policy rejects
+writes outside this repository's output areas.
+
+## Cohort bootstrap (currently blocked)
 
 Create reproducible outer/validation manifests after an approved cohort
 manifest with real de-identified patient IDs is available:
 
 ```bash
-python scripts/validate_data.py --config configs/center_a.yaml
-python scripts/create_splits.py --config configs/center_a.yaml
+E:/cjj/anaconda3/envs/irae/python.exe scripts/validate_data.py --config configs/center_a.json
+E:/cjj/anaconda3/envs/irae/python.exe scripts/create_splits.py --config configs/center_a.json
 ```
 
-Run Phase 1–2 tests:
+Run all Phase 1–3 tests:
 
 ```bash
-python -m unittest discover -s tests -p "test_*.py" -v
+E:/cjj/anaconda3/envs/irae/python.exe -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 The future official entry point is reserved as:
 
 ```bash
-python scripts/run_cv.py --config configs/center_a.yaml
+E:/cjj/anaconda3/envs/irae/python.exe scripts/run_cv.py --config configs/center_a.json
 ```
 
 At the current phase it validates the configuration and exits without
@@ -89,4 +107,5 @@ and run outputs are ignored by Git.
 
 See [docs/paper_code_mapping.md](docs/paper_code_mapping.md) for equation-level
 implementation status and [docs/legacy_migration.md](docs/legacy_migration.md)
-for the legacy migration boundary.
+for the legacy migration boundary. Phase 2.5 evidence is documented in
+[docs/data_environment_binding.md](docs/data_environment_binding.md).
