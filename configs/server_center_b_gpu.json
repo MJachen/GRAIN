@@ -1,0 +1,14 @@
+{
+  "inherits": "formal_center_b.json",
+  "experiment": {
+    "name": "grain_center_b_formal",
+    "output_subdir": "formal_center_b_server_gpu"
+  },
+  "environment": {
+    "python_executable": "python",
+    "environment_name": "server_active_cuda_environment"
+  },
+  "data": {
+    "source_root": "/home/cjc/iraeexps"
+  }
+}
