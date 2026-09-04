@@ -60,6 +60,64 @@
       "dataset": "grain_center_a"
     },
     {
+      "absolute_path": "E:/EXPS/attention/data/qilu_spleen_new0904.csv",
+      "filename": "qilu_spleen_new0904.csv",
+      "file_size_bytes": 376898,
+      "sha256": "8e0cfa3b7db6fc08140c8d5e431712a439709237fc745fece7247a2b55d500b3",
+      "rows": 221,
+      "columns": 241,
+      "label_column": "label",
+      "label_distribution": {
+        "negative_0": 157,
+        "positive_1": 64
+      },
+      "feature_dimension": 240,
+      "modality_layout": {
+        "skip_leading_columns": 0,
+        "plain_columns_zero_based": [
+          0,
+          119
+        ],
+        "ce_columns_zero_based": [
+          120,
+          239
+        ],
+        "order": [
+          "plain",
+          "ce"
+        ],
+        "availability_rule_for_inventory_only": "block is not entirely NaN"
+      },
+      "modality_availability": {
+        "plain_only": 185,
+        "ce_only": 23,
+        "both": 13,
+        "neither": 0,
+        "partial_plain_rows": 0,
+        "partial_ce_rows": 0
+      },
+      "data_quality": {
+        "nan_cells_plain": 2760,
+        "nan_cells_ce": 22200,
+        "inf_cells_plain": 0,
+        "inf_cells_ce": 0,
+        "missing_labels": 0,
+        "non_numeric_feature_cells": 0
+      },
+      "patient_identity": {
+        "status": "blocked",
+        "reason": "No configured stable patient ID column; experiment-local stable sample IDs are used.",
+        "first_column": "0"
+      },
+      "confidence": "CONFIRMED",
+      "paper_expected": {
+        "status": "not_used_as_a_training_gate"
+      },
+      "legacy_code_evidence": [],
+      "dataset": "grain_center_a_0904",
+      "candidate_role": "User-designated current Center A formal dataset on 2026-09-04"
+    },
+    {
       "absolute_path": "E:/EXPS/attention/data/sd_spleen_label2.csv",
       "filename": "sd_spleen_label2.csv",
       "file_size_bytes": 265952,

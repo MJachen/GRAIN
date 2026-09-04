@@ -1,0 +1,17 @@
+{
+  "inherits": "formal_center_a.json",
+  "experiment": {
+    "name": "grain_center_a_formal",
+    "output_subdir": "formal_center_a_0904_gpu"
+  },
+  "environment": {
+    "python_executable": "E:/cjj/anaconda3/envs/medhgnn/python.exe",
+    "environment_name": "medhgnn"
+  },
+  "data": {
+    "feature_source": "data/qilu_spleen_new0904.csv",
+    "sample_id_prefix": "centerA0904",
+    "expected_sha256": "8e0cfa3b7db6fc08140c8d5e431712a439709237fc745fece7247a2b55d500b3",
+    "provenance_status": "user_designated_current_dataset"
+  }
+}
