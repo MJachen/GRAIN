@@ -53,6 +53,11 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ConfigurationError(f"Missing top-level sections: {sorted(missing)}")
 
     data = config["data"]
+    for field in ("enforce_fingerprint", "require_inventory_registration"):
+        if field in data and not isinstance(data[field], bool):
+            raise ConfigurationError(f"data.{field} must be a boolean")
+    if data.get("enforce_fingerprint", False) and not data.get("expected_sha256"):
+        raise ConfigurationError("data.expected_sha256 is required when fingerprint enforcement is enabled")
     modalities = data.get("modalities", {})
     if tuple(modalities) != ("plain", "ce"):
         raise ConfigurationError("Modalities must be ordered exactly as plain, ce.")

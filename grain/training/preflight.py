@@ -11,7 +11,11 @@ from typing import Any
 import numpy as np
 import torch
 
-from grain.data import load_legacy_feature_table, generate_nested_manifests_from_arrays
+from grain.data import (
+    generate_nested_manifests_from_arrays,
+    load_legacy_feature_table,
+    resolve_data_fingerprint,
+)
 from grain.data.paths import RepositoryPathPolicy
 from grain.evaluation import compute_metrics
 from grain.models import GRAIN
@@ -55,17 +59,9 @@ def run_preflight(config: dict[str, Any], repository_root: Path) -> dict[str, An
         source = Path(data["source_root"]) / str(data.get("feature_source"))
         record("dataset_path_exists", False, str(error))
 
-    inventory_path = repository_root / "artifacts" / "data_inventory.json"
-    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
     expected_sha = data.get("expected_sha256")
-    inventory_matches = [
-        item for item in inventory["datasets"] if item["sha256"] == expected_sha
-    ]
-    record(
-        "data_sha256_recorded",
-        bool(expected_sha and inventory_matches),
-        expected_sha or "missing",
-    )
+    enforce_fingerprint = bool(data.get("enforce_fingerprint", False))
+    require_inventory = bool(data.get("require_inventory_registration", False))
     layout = data.get("legacy_layout", {})
     layout_ok = all(
         layout.get(key) is not None
@@ -101,10 +97,31 @@ def run_preflight(config: dict[str, Any], repository_root: Path) -> dict[str, An
             ce_dimension=int(layout["ce_dimension"]),
             label_column=data["label_column"],
             expected_sha256=expected_sha,
+            enforce_fingerprint=enforce_fingerprint,
         )
         record("explicit_mask", cohort.modality_mask.dtype == torch.bool, str(cohort.modality_mask.dtype))
     except Exception as error:
         record("explicit_mask", False, f"{type(error).__name__}: {error}")
+
+    if cohort is not None:
+        record("data_sha256_recorded", True, cohort.source_sha256)
+        try:
+            fingerprint = resolve_data_fingerprint(
+                source_path=cohort.source_path,
+                source_sha256=cohort.source_sha256,
+                inventory_path=repository_root / "artifacts" / "data_inventory.json",
+                require_inventory_registration=require_inventory,
+            )
+            record(
+                "inventory_registration",
+                fingerprint["inventory_registered"] or not require_inventory,
+                fingerprint["registration_status"],
+            )
+        except Exception as error:
+            record("inventory_registration", False, f"{type(error).__name__}: {error}")
+    else:
+        record("data_sha256_recorded", False, "source could not be loaded")
+        record("inventory_registration", False, "source could not be loaded")
 
     record(
         "label_free_inference",

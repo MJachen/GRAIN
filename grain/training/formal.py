@@ -17,7 +17,11 @@ from typing import Any, Callable
 import numpy as np
 import torch
 
-from grain.data import load_legacy_feature_table, generate_nested_manifests_from_arrays
+from grain.data import (
+    generate_nested_manifests_from_arrays,
+    load_legacy_feature_table,
+    resolve_data_fingerprint,
+)
 from grain.data.paths import RepositoryPathPolicy
 from grain.evaluation import EvaluationResult, compute_metrics
 
@@ -68,7 +72,8 @@ def load_formal_cohort(config: dict[str, Any], repository_root: Path):
         plain_dimension=int(layout["plain_dimension"]),
         ce_dimension=int(layout["ce_dimension"]),
         label_column=data["label_column"],
-        expected_sha256=data["expected_sha256"],
+        expected_sha256=data.get("expected_sha256"),
+        enforce_fingerprint=bool(data.get("enforce_fingerprint", False)),
     )
 
 
@@ -188,11 +193,13 @@ def run_formal_cv(
     cohort = load_formal_cohort(config, repository_root)
     if cohort.feature_dimension != int(config["model"]["feature_dimension"]):
         raise ValueError("Bound feature dimension does not match the frozen architecture")
-    inventory = json.loads(
-        (repository_root / "artifacts" / "data_inventory.json").read_text(encoding="utf-8")
-    )
-    fingerprint = next(
-        item for item in inventory["datasets"] if item["sha256"] == cohort.source_sha256
+    fingerprint = resolve_data_fingerprint(
+        source_path=cohort.source_path,
+        source_sha256=cohort.source_sha256,
+        inventory_path=repository_root / "artifacts" / "data_inventory.json",
+        require_inventory_registration=bool(
+            config["data"].get("require_inventory_registration", False)
+        ),
     )
     manifests = generate_nested_manifests_from_arrays(
         cohort.sample_ids,
@@ -222,6 +229,8 @@ def run_formal_cv(
         "git_commit": commit,
         "data_sha256": cohort.source_sha256,
         "data_source": cohort.source_path,
+        "data_registration_status": fingerprint["registration_status"],
+        "inventory_registered": fingerprint["inventory_registered"],
         "architecture_config": config["experiment"]["architecture_manifest"],
         "resolved_config": "resolved_config.json",
         "test_policy": "exactly_once_per_fold_after_best_validation_checkpoint_reload",

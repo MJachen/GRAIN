@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pathlib import Path
 import unittest
 
@@ -11,6 +12,18 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(config["split"]["k_candidates"], list(range(2, 11)))
         self.assertEqual(config["training"]["checkpoint_metric"], "validation_auc")
         self.assertEqual(tuple(config["data"]["modalities"]), ("plain", "ce"))
+        self.assertFalse(config["data"]["enforce_fingerprint"])
+        self.assertFalse(config["data"]["require_inventory_registration"])
+
+    def test_expected_sha256_is_optional_when_enforcement_is_disabled(self) -> None:
+        path = Path(__file__).parents[1] / "configs" / "center_a.json"
+        config = deepcopy(load_config(path))
+        config["data"].pop("expected_sha256")
+        validate_config(config)
+
+        config["data"]["enforce_fingerprint"] = True
+        with self.assertRaisesRegex(ConfigurationError, "expected_sha256"):
+            validate_config(config)
 
     def test_test_metric_cannot_select_checkpoint(self) -> None:
         path = Path(__file__).parents[1] / "configs" / "center_a.json"

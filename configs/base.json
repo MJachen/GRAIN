@@ -10,6 +10,8 @@
     "cohort_manifest": null,
     "feature_source": null,
     "provenance_status": "unverified",
+    "enforce_fingerprint": false,
+    "require_inventory_registration": false,
     "patient_id_column": null,
     "center_column": null,
     "label_column": "label",

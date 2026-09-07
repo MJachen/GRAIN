@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 
 import numpy as np
 import pandas as pd
@@ -72,15 +73,18 @@ def load_legacy_feature_table(
     plain_dimension: int,
     ce_dimension: int,
     label_column: str,
-    expected_sha256: str,
+    expected_sha256: str | None = None,
+    enforce_fingerprint: bool = False,
 ) -> LegacyFeatureCohort:
-    """Load the bound artifact after checking its immutable fingerprint."""
+    """Load a legacy artifact, optionally enforcing a configured fingerprint."""
 
     from .legacy import sha256_file
 
     source = Path(path).resolve()
     observed_sha256 = sha256_file(source)
-    if observed_sha256 != expected_sha256:
+    if enforce_fingerprint and not expected_sha256:
+        raise ValueError("Fingerprint enforcement requires an expected SHA256")
+    if enforce_fingerprint and observed_sha256 != expected_sha256:
         raise ValueError(
             f"Legacy source fingerprint changed: {observed_sha256}; expected {expected_sha256}"
         )
@@ -115,3 +119,43 @@ def load_legacy_feature_table(
         source_path=source.as_posix(),
         source_sha256=observed_sha256,
     )
+
+
+def resolve_data_fingerprint(
+    *,
+    source_path: str | Path,
+    source_sha256: str,
+    inventory_path: str | Path,
+    require_inventory_registration: bool = False,
+) -> dict[str, Any]:
+    """Return provenance for the actual source, with optional inventory enforcement."""
+
+    inventory_file = Path(inventory_path)
+    datasets: list[dict[str, Any]] = []
+    if inventory_file.is_file():
+        inventory = json.loads(inventory_file.read_text(encoding="utf-8"))
+        datasets = inventory.get("datasets", [])
+        if not isinstance(datasets, list):
+            raise ValueError("Data inventory datasets must be a list")
+
+    registered = next(
+        (item for item in datasets if item.get("sha256") == source_sha256),
+        None,
+    )
+    if registered is None:
+        if require_inventory_registration:
+            raise ValueError(
+                f"Dataset SHA256 is not registered in the data inventory: {source_sha256}"
+            )
+        return {
+            "sha256": source_sha256,
+            "source_path": Path(source_path).resolve().as_posix(),
+            "inventory_registered": False,
+            "registration_status": "unregistered_dataset",
+        }
+
+    fingerprint = dict(registered)
+    fingerprint["sha256"] = source_sha256
+    fingerprint["inventory_registered"] = True
+    fingerprint["registration_status"] = "registered_dataset"
+    return fingerprint

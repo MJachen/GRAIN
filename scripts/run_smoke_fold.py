@@ -18,7 +18,11 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from grain.config import load_config
-from grain.data import load_legacy_feature_table, generate_nested_manifests_from_arrays
+from grain.data import (
+    generate_nested_manifests_from_arrays,
+    load_legacy_feature_table,
+    resolve_data_fingerprint,
+)
 from grain.data.paths import RepositoryPathPolicy
 from grain.training import (
     ValidationCheckpointManager,
@@ -53,7 +57,8 @@ def load_bound_cohort(config: dict):
         plain_dimension=int(layout["plain_dimension"]),
         ce_dimension=int(layout["ce_dimension"]),
         label_column=data["label_column"],
-        expected_sha256=data["expected_sha256"],
+        expected_sha256=data.get("expected_sha256"),
+        enforce_fingerprint=bool(data.get("enforce_fingerprint", False)),
     )
 
 
@@ -93,9 +98,13 @@ def main() -> None:
     output_root = REPOSITORY_ROOT / "outputs" / config["experiment"]["name"] / f"fold_{args.fold:02d}"
     output_root.mkdir(parents=True, exist_ok=True)
     commit = git_commit()
-    inventory = json.loads((REPOSITORY_ROOT / "artifacts" / "data_inventory.json").read_text(encoding="utf-8"))
-    fingerprint = next(
-        item for item in inventory["datasets"] if item["sha256"] == cohort.source_sha256
+    fingerprint = resolve_data_fingerprint(
+        source_path=cohort.source_path,
+        source_sha256=cohort.source_sha256,
+        inventory_path=REPOSITORY_ROOT / "artifacts" / "data_inventory.json",
+        require_inventory_registration=bool(
+            config["data"].get("require_inventory_registration", False)
+        ),
     )
 
     selected_k, candidates = select_k_on_validation(
@@ -230,6 +239,8 @@ def main() -> None:
         "dataset": config["experiment"]["name"],
         "legacy_source": cohort.source_path,
         "data_sha256": cohort.source_sha256,
+        "data_registration_status": fingerprint["registration_status"],
+        "inventory_registered": fingerprint["inventory_registered"],
         "sample_id_kind": cohort.id_kind,
         "fold": args.fold,
         "seed": seed,

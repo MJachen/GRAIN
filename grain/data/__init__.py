@@ -2,7 +2,11 @@
 
 from .anchors import AnchorBank
 from .dataset import FeatureDataset, collate_samples
-from .legacy_cohort import LegacyFeatureCohort, load_legacy_feature_table
+from .legacy_cohort import (
+    LegacyFeatureCohort,
+    load_legacy_feature_table,
+    resolve_data_fingerprint,
+)
 from .schema import CohortManifest, PatientRecord
 from .splits import (
     SplitManifest,
@@ -21,4 +25,5 @@ __all__ = [
     "generate_nested_manifests",
     "generate_nested_manifests_from_arrays",
     "load_legacy_feature_table",
+    "resolve_data_fingerprint",
 ]
